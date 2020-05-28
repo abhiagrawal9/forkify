@@ -29,12 +29,21 @@ const controlSearch = async () => {
         clearLoader();
         // Render results in the ui
         searchView.renderResults(state.search.result);
+    } else {
+        alert('Please enter the valid keyword in search field');
     }
-}
-
+};
 
 elements.searchField.addEventListener('submit', (event) => {
     event.preventDefault();
     controlSearch();
 });
 
+elements.searchResPages.addEventListener('click', (event) => {
+    const btn = event.target.closest('.btn-inline');
+    if (btn) {
+        const goToPage = parseInt(btn.dataset.goto, 10); // base 10
+        searchView.clearResults();
+        searchView.renderResults(state.search.result, goToPage);
+    }
+});
