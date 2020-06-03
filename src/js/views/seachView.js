@@ -91,3 +91,11 @@ export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     // render paginations buttons
     rendorButtons(page, recipes.length, resPerPage);
 };
+
+export const highlightedSelected = id => {
+    const resultsArray = Array.from(document.querySelectorAll('.results__link'));
+    resultsArray.forEach(el => {
+        el.classList.remove('results__link--active')
+    });
+    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+};
