@@ -3,6 +3,7 @@ import Recipe from './models/Recipe';
 import List from './models/List';
 import * as searchView from './views/seachView'
 import * as recipeView from './views/recipeView'
+import * as listView from './views/listView'
 import { elements, renderLoader, clearLoader } from './views/base';
 
 /**
@@ -90,11 +91,41 @@ const controlRecipe = async () => {
     }
 };
 
-// window.addEventListener('hashchange', controlRecipe);
-// window.addEventListener('load', controlRecipe);
-
 // How to use same event listeners on mutilpe events
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
+
+/**
+ * List CONTROLLER
+ */
+const controlList = () => {
+    // Crete a new list if there is no list
+    if (!state.list) state.list = new List();
+
+    // Add ingredients to list
+    state.recipe.ingredients.forEach(cur => {
+        const item = state.list.addItem(cur.count, cur.unit, cur.ingredient);
+        // render item in UI
+        listView.renderItem(item);
+    });
+}
+
+// handle delete and update list item events
+elements.shopping.addEventListener('click', e => {
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+    // handle delete event
+    if (e.target.matches('.shopping__delete, .shopping__delete *')) {
+        // delete from state
+        state.list.deleteItem(id);
+        // delete from UI
+        listView.deleteItem(id);
+    }
+    // handle the count update
+    else if (e.target.matches('.shopping__count-value')) {
+        const val = parseFloat(e.target.value, 10);
+        state.list.updateCount(id, val);
+    }
+})
+
 
 // handling recipe button click controllers
 elements.recipe.addEventListener('click', event => {
@@ -109,7 +140,10 @@ elements.recipe.addEventListener('click', event => {
         state.recipe.updateServings('inc');
         recipeView.UpdateServingsIngredients(state.recipe)
 
+    } else if (event.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+        controlList();
     }
 });
 
-window.l = new List();
+
+
