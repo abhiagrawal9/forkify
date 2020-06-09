@@ -1,4 +1,3 @@
-
 # Forkify
 
 ## Search for Food recipes of below items:
